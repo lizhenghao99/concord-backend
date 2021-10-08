@@ -8,4 +8,5 @@ export const configSchema = Joi.object({
     JWT_SECRET: Joi.string().required(),
     NETFLIX_API_HOST: Joi.string().required(),
     NETFLIX_API_KEY: Joi.string().required(),
+    FRONTEND_BASE_URL: Joi.string().required(),
 });
