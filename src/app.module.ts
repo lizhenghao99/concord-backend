@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configSchema } from './config.schema';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ExampleModule } from './example/example.module';
 import { RequestLoggerMiddleware } from './logger/request-logger.middleware';
 import { AuthModule } from './auth/auth.module';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
@@ -41,7 +40,6 @@ import { PollsModule } from './polls/polls.module';
                 };
             },
         }),
-        ExampleModule,
         AuthModule,
         UsersModule,
         MatchesModule,

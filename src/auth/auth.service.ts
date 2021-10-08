@@ -57,4 +57,8 @@ export class AuthService {
         result.isDuplicate = count > 0 ? 1 : 0;
         return result;
     }
+
+    async getCurrentUser(user: UserEntity): Promise<UserEntity> {
+        return user;
+    }
 }

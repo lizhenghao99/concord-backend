@@ -16,25 +16,25 @@ export class PollsController {
     constructor(private pollsService: PollsService) {
     }
 
-    @ApiOperation({ summary: 'create new poll' })
+    @ApiOperation({ summary: 'Create new poll' })
     @Post()
     create(@GetUser() user: UserEntity, @Body() body: CreatePollDto): Promise<PollEntity> {
         return this.pollsService.create(user, body);
     }
 
-    @ApiOperation({ summary: 'find by match id' })
+    @ApiOperation({ summary: 'Find by match id' })
     @Get(':matchId')
     findByMatchId(@GetUser() user: UserEntity, @Param() param: MatchIdDto): Promise<PollEntity> {
         return this.pollsService.findByMatchId(user, param.matchId);
     }
 
-    @ApiOperation({ summary: 'respond to poll' })
+    @ApiOperation({ summary: 'Respond to poll' })
     @Post('respond')
     respond(@GetUser() user: UserEntity, @Body() body: RespondPollDto): Promise<void> {
         return this.pollsService.respond(user, body);
     }
 
-    @ApiOperation({ summary: 'generate result' })
+    @ApiOperation({ summary: 'Generate result' })
     @Post('result/:pollId')
     generateResult(@Param() param) {
         return this.pollsService.generateResult(param.pollId);

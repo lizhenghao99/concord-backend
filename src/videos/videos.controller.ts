@@ -11,13 +11,13 @@ export class VideosController {
     constructor(private videosService: VideosService) {
     }
 
-    @ApiOperation({ summary: 'search videos' })
+    @ApiOperation({ summary: 'Search videos' })
     @Get()
     search(@Query() query: SearchDto): Promise<VideoDto[]> {
         return this.videosService.search(query);
     }
 
-    @ApiOperation({ summary: 'find videos by ids' })
+    @ApiOperation({ summary: 'Find videos by ids' })
     @Get(':ids')
     findByIds(@Param() param: FindByIdsDto): Promise<VideoDto[]> {
         return this.videosService.findByIds(param.ids);

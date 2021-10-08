@@ -57,4 +57,11 @@ export class AuthController {
     ): Promise<IsDuplicateDto> {
         return this.authService.checkDuplicateUsername(param.username);
     }
+
+    @ApiOperation({ summary: 'Get current user' })
+    @Get('user')
+    @UseGuards(AuthGuard(['jwt', 'cookie']))
+    getCurrentUser(@GetUser() user: UserEntity): Promise<UserEntity> {
+        return this.authService.getCurrentUser(user);
+    }
 }

@@ -13,13 +13,13 @@ export class MatchesController {
     constructor(private matchesService: MatchesService) {
     }
 
-    @ApiOperation({ summary: 'list all matches' })
+    @ApiOperation({ summary: 'List all matches' })
     @Get()
     listAll(@GetUser() user: UserEntity) {
         return this.matchesService.listAll(user);
     }
 
-    @ApiOperation({ summary: 'create a match' })
+    @ApiOperation({ summary: 'Create a match' })
     @Post()
     create(@GetUser() user: UserEntity, @Body() body: CreateMatchDto) {
         return this.matchesService.create(user, body);
