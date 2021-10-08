@@ -34,7 +34,8 @@ export class AuthController {
             );
             res.cookie('access_token', result.accessToken, {
                 expires: new Date(new Date().getTime() + 3600 * 1000),
-                sameSite: 'strict',
+                sameSite: 'none',
+                secure: true,
                 httpOnly: 'true',
             });
             return result;
