@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PollsService } from './polls.service';
 import { GetUser } from '../auth/get-user.decorator';
@@ -8,6 +8,7 @@ import { PollEntity } from './poll.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { MatchIdDto } from './dto/match-id.dto';
 import { RespondPollDto } from './dto/respond-poll.dto';
+import { UpdateItemsDto } from './dto/update-items.dto';
 
 @ApiTags('polls')
 @Controller('polls')
@@ -26,6 +27,12 @@ export class PollsController {
     @Get(':matchId')
     findByMatchId(@GetUser() user: UserEntity, @Param() param: MatchIdDto): Promise<PollEntity> {
         return this.pollsService.findByMatchId(user, param.matchId);
+    }
+
+    @ApiOperation({ summary: 'Update poll items' })
+    @Patch()
+    updatePollItems(@GetUser() user: UserEntity, @Body() body: UpdateItemsDto): Promise<PollEntity> {
+        return this.pollsService.updateItems(user, body);
     }
 
     @ApiOperation({ summary: 'Respond to poll' })

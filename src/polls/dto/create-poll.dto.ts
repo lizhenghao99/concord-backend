@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreatePollDto {
     @IsNotEmpty()
@@ -7,5 +7,13 @@ export class CreatePollDto {
 
     @IsNotEmpty()
     @IsString()
-    items: string;
+    type: string;
+
+    @IsOptional()
+    @IsString()
+    items?: string;
+
+    @IsOptional()
+    @IsString()
+    extras?: string;
 }

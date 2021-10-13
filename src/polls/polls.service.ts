@@ -9,6 +9,7 @@ import { RespondPollDto } from './dto/respond-poll.dto';
 import { PollResponsesRepository } from './poll-responses.repository';
 import { PollResponseEntriesRepository } from './poll-response-entries.repository';
 import { PollResultsRepository } from './poll-results.repository';
+import { UpdateItemsDto } from './dto/update-items.dto';
 
 @Injectable()
 export class PollsService {
@@ -38,7 +39,9 @@ export class PollsService {
         if (match.poll) throw new ConflictException('Match already has a poll');
         const poll = await this.pollsRepository.create({
             match,
+            type: createPollDto.type,
             items: createPollDto.items,
+            extras: createPollDto.extras,
         });
         await this.pollsRepository.save(poll);
         return poll;
@@ -50,10 +53,19 @@ export class PollsService {
         return poll;
     }
 
+    async updateItems(user: UserEntity, updateItemsDto: UpdateItemsDto) {
+        const poll = await this.findByMatchId(user, updateItemsDto.matchId);
+        poll.items = updateItemsDto.items;
+        await this.pollsRepository.save(poll);
+        return poll;
+    }
+
     async respond(user: UserEntity, respondPollDto: RespondPollDto): Promise<void> {
         const poll = await this.pollsRepository.findById(respondPollDto.pollId);
         if (!poll) throw new NotFoundException('Poll not found');
-        const prevResponse = await this.pollResponsesRepository.findByUserIdAndLocalName(user.id, respondPollDto.localName);
+        if (!poll.items) throw new NotFoundException('Poll has no items');
+        const prevResponse = await this.pollResponsesRepository.findByUserIdAndLocalName(
+            poll.id, user.id, respondPollDto.localName);
         if (prevResponse) throw new ConflictException('User with local name already responded to poll');
         const response = this.pollResponsesRepository.create({
             user,

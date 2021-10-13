@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetUser } from '../auth/get-user.decorator';
@@ -17,6 +17,12 @@ export class MatchesController {
     @Get()
     listAll(@GetUser() user: UserEntity) {
         return this.matchesService.listAll(user);
+    }
+
+    @ApiOperation({ summary: 'Find match by id' })
+    @Get(':id')
+    findById(@GetUser() user: UserEntity, @Param() param) {
+        return this.matchesService.findById(user, param.id);
     }
 
     @ApiOperation({ summary: 'Create a match' })

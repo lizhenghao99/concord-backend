@@ -33,7 +33,7 @@ export class AuthController {
                 body.password,
             );
             res.cookie('access_token', result.accessToken, {
-                expires: new Date(new Date().getTime() + 3600 * 1000),
+                expires: new Date(new Date().getTime() + 24 * 3600 * 1000),
                 sameSite: 'none',
                 secure: true,
                 httpOnly: 'true',

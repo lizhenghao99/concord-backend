@@ -1,8 +1,6 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { UserEntity } from '../users/user.entity';
 import { PollEntity } from '../polls/poll.entity';
-import { Exclude } from 'class-transformer';
-import { ApiHideProperty } from '@nestjs/swagger';
 
 @Entity('match')
 export class MatchEntity {
@@ -39,7 +37,5 @@ export class MatchEntity {
     remoteParticipants: UserEntity[];
 
     @OneToOne(() => PollEntity, (poll) => poll.match)
-    @Exclude()
-    @ApiHideProperty()
     poll: PollEntity;
 }

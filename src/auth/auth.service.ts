@@ -33,10 +33,10 @@ export class AuthService {
         if (user && (await bcrypt.compare(password, user.password))) {
             this.logger.log(`User ${username} successfully signed in`);
             // cache login state
-            await this.cacheManager.set(`LOGIN:${username}`, '1', { ttl: 3600 });
+            await this.cacheManager.set(`LOGIN:${username}`, '1', { ttl: 24 * 3600 });
             // jwt
             const payload: JwtPayloadInterface = { username };
-            const accessToken = this.jwtService.sign(payload);
+            const accessToken = this.jwtService.sign(payload, { expiresIn: 24 * 3600 });
 
             const result = new AccessTokenDto();
             result.accessToken = accessToken;

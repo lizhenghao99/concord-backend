@@ -11,7 +11,13 @@ export class PollEntity {
     id: string;
 
     @Column()
+    type: string;
+
+    @Column({ nullable: true })
     items: string;
+
+    @Column({ nullable: true })
+    extras?: string;
 
     @OneToOne(() => MatchEntity, (match) => match.poll)
     @JoinColumn()

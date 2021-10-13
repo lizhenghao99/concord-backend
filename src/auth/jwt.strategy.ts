@@ -1,9 +1,4 @@
-import {
-    CACHE_MANAGER,
-    Inject,
-    Injectable,
-    UnauthorizedException,
-} from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -31,7 +26,11 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
     async validate(payload: JwtPayloadInterface): Promise<UserEntity> {
         const { username } = payload;
-        const user = await this.usersRepository.findOne({ username });
+        let user: UserEntity = await this.cacheManager.get(`USER:${username}`);
+        if (!user) {
+            user = await this.usersRepository.findOne({ username });
+            await this.cacheManager.set(`USER:${username}`, user, { ttl: 3600 });
+        }
         const isLoggedIn = await this.cacheManager.get(`LOGIN:${username}`);
         if (!user || isLoggedIn !== '1') {
             throw new UnauthorizedException();

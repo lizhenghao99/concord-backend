@@ -19,6 +19,10 @@ export class MatchesService {
         return this.matchesRepository.listByUserId(user.id);
     }
 
+    findById(user: UserEntity, matchId: string): Promise<MatchEntity> {
+        return this.matchesRepository.findByIdAndUserId(matchId, user.id);
+    }
+
     async create(
         user: UserEntity,
         createMatchDto: CreateMatchDto,

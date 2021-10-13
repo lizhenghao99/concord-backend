@@ -7,6 +7,7 @@ export class MatchesRepository extends Repository<MatchEntity> {
         return this.find({
             where: { host: { id: userId } },
             order: { createAt: 'DESC' },
+            relations: ['poll'],
         });
     }
 
