@@ -4,6 +4,8 @@ import { MatchesRepository } from './matches.repository';
 import { UserEntity } from '../users/user.entity';
 import { MatchEntity } from './match.entity';
 import { CreateMatchDto } from './dto/create-match.dto';
+import { PageDto } from './dto/page.dto';
+import { MatchPageDto } from './dto/match-page.dto';
 
 @Injectable()
 export class MatchesService {
@@ -17,6 +19,14 @@ export class MatchesService {
 
     listAll(user: UserEntity): Promise<MatchEntity[]> {
         return this.matchesRepository.listByUserId(user.id);
+    }
+
+    async listPaged(user: UserEntity, pageDto: PageDto): Promise<MatchPageDto> {
+        const skip = (pageDto.pageNo - 1) * pageDto.pageSize;
+        const result = new MatchPageDto();
+        result.matches = await this.matchesRepository.listByUserIdPaged(user.id, skip, pageDto.pageSize);
+        result.total = await this.matchesRepository.countByUserId(user.id);
+        return result;
     }
 
     findById(user: UserEntity, matchId: string): Promise<MatchEntity> {

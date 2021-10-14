@@ -78,7 +78,6 @@ export class VideosService {
             method: 'GET',
             url: `https://${this.configService.get('NETFLIX_API_HOST')}/search`,
             params: {
-                type: 'movie',
                 orderby: 'rating',
                 countrylist: '78',
                 audio: 'english',

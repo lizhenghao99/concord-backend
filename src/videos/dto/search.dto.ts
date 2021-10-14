@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumberString, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsNumberString, IsOptional, IsString } from 'class-validator';
 
 export class SearchDto {
     @IsOptional()
@@ -7,6 +7,10 @@ export class SearchDto {
     @IsOptional()
     @IsNumberString()
     start_year?: number;
+
+    @IsOptional()
+    @IsString()
+    type?: string;
 
     @IsNotEmpty()
     @IsNumberString()
