@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MatchesRepository } from './matches.repository';
 import { UserEntity } from '../users/user.entity';
@@ -9,8 +9,6 @@ import { MatchPageDto } from './dto/match-page.dto';
 
 @Injectable()
 export class MatchesService {
-    private logger = new Logger('MatchesService', { timestamp: true });
-
     constructor(
         @InjectRepository(MatchesRepository)
         private matchesRepository: MatchesRepository,
