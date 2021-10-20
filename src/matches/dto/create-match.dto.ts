@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsOptional, IsString, Max, Min } from 'class-validator';
+import { UserEntity } from '../../users/user.entity';
 
 export class CreateMatchDto {
     @IsNotEmpty()
@@ -13,4 +14,7 @@ export class CreateMatchDto {
     @IsOptional()
     @IsString()
     localParticipants?: string;
+
+    @IsOptional()
+    remoteParticipants?: UserEntity[];
 }

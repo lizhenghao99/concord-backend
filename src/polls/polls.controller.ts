@@ -41,6 +41,12 @@ export class PollsController {
         return this.pollsService.respond(user, body);
     }
 
+    @ApiOperation({ summary: 'Opt out of poll' })
+    @Post('opt-out')
+    optOut(@GetUser() user: UserEntity, @Body() body: MatchIdDto): Promise<void> {
+        return this.pollsService.optOut(user, body.matchId);
+    }
+
     @ApiOperation({ summary: 'Generate result' })
     @Post('result/:pollId')
     generateResult(@Param() param) {

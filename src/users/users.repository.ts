@@ -58,4 +58,12 @@ export class UsersRepository extends Repository<UserEntity> {
             },
         });
     }
+
+    findWithParticipatedMatches(id: string): Promise<UserEntity> {
+        return this.findOne({
+            where: { id },
+            relations: ['participatedMatches', 'participatedMatches.poll'],
+        });
+    }
+
 }

@@ -30,4 +30,7 @@ export class NotificationEntity {
 
     @Column('timestamp')
     createAt: string;
+
+    @Column({ nullable: true })
+    extras: string;
 }

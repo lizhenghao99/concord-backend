@@ -1,4 +1,4 @@
-import { CACHE_MANAGER, ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { CACHE_MANAGER, ConflictException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { UserInfoEntity } from './user-info.entity';
 import { UserInfosRepository } from './user-infos.repository';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,6 +13,8 @@ import { UserSearchResultDto } from './dto/user-search-result.dto';
 
 @Injectable()
 export class UsersService {
+    private logger = new Logger('UsersService', { timestamp: true });
+
     constructor(
         @InjectRepository(UserInfosRepository)
         private userInfosRepository: UserInfosRepository,
@@ -119,6 +121,14 @@ export class UsersService {
             result.isFriend = friends.some(e => e.id === value.id) ? 1 : 0;
             return result;
         });
+    }
+
+    findByIds(ids: string[]): Promise<UserEntity[]> {
+        return this.usersRepository.findByIds(ids);
+    }
+
+    findWithParticipatedMatches(user: UserEntity): Promise<UserEntity> {
+        return this.usersRepository.findWithParticipatedMatches(user.id);
     }
 }
 

@@ -10,6 +10,7 @@ import { PollResponsesRepository } from './poll-responses.repository';
 import { PollResponseEntriesRepository } from './poll-response-entries.repository';
 import { PollResultsRepository } from './poll-results.repository';
 import { UpdateItemsDto } from './dto/update-items.dto';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class PollsService {
@@ -26,6 +27,7 @@ export class PollsService {
         private pollResponseEntriesRepository: PollResponseEntriesRepository,
         @InjectRepository(PollResultsRepository)
         private pollResultsRepository: PollResultsRepository,
+        private notificationsService: NotificationsService,
     ) {
     }
 
@@ -48,7 +50,7 @@ export class PollsService {
     }
 
     async findByMatchId(user: UserEntity, matchId: string): Promise<PollEntity> {
-        const poll = await this.pollsRepository.findByMatchId(matchId, user.id);
+        const poll = await this.pollsRepository.findByMatchId(matchId);
         if (!poll) throw new NotFoundException('Poll not found');
         return poll;
     }
@@ -57,6 +59,7 @@ export class PollsService {
         const poll = await this.findByMatchId(user, updateItemsDto.matchId);
         poll.items = updateItemsDto.items;
         await this.pollsRepository.save(poll);
+        await this.notifyPollStart(user, updateItemsDto.matchId);
         return poll;
     }
 
@@ -77,6 +80,29 @@ export class PollsService {
         });
         await this.pollResponsesRepository.save(response);
         await this.generateResult(respondPollDto.pollId);
+    }
+
+    async optOut(user: UserEntity, matchId: string) {
+        const poll = await this.pollsRepository.findByMatchId(matchId);
+        if (!poll) throw new NotFoundException('Poll not found');
+        if (!poll.items) throw new NotFoundException('Poll has no items');
+        const prevResponse = await this.pollResponsesRepository.findByUserIdAndLocalName(
+            poll.id, user.id, '');
+        if (prevResponse) throw new ConflictException('User already responded to poll');
+        const entries = poll.items.split(',').map(value => {
+            return this.pollResponseEntriesRepository.create({
+                item: value,
+                score: 1,
+            });
+        });
+        const response = this.pollResponsesRepository.create({
+            user,
+            poll,
+            localName: '',
+            entries,
+        });
+        await this.pollResponsesRepository.save(response);
+        await this.generateResult(poll.id);
     }
 
     async generateResult(pollId: string) {
@@ -106,5 +132,40 @@ export class PollsService {
         match.isCompleted = 1;
         match.result = items;
         await this.matchesRepository.save(match);
+        await this.notifyPollResult(match.host, match.id);
+    }
+
+    async notifyPollStart(user: UserEntity, matchId: string) {
+        const match = await this.matchesRepository.findByIdAndUserId(matchId, user.id);
+        const poll = await this.findByMatchId(user, matchId);
+        for (const participant of match.remoteParticipants) {
+            await this.notificationsService.send(user, participant, {
+                type: 'poll-start',
+                title: 'New Match Invitation',
+                message: `You have been invited by ${user.userInfo.nickname} to participate`
+                    + ` in a ${match.poll.type} match of length ${poll.items.split(',').length}.`,
+                extras: matchId,
+            });
+        }
+    }
+
+    async notifyPollResult(user: UserEntity, matchId: string) {
+        const match = await this.matchesRepository.findByIdAndUserId(matchId, user.id);
+        for (const participant of match.remoteParticipants) {
+            await this.notificationsService.send(user, participant, {
+                type: 'poll-result',
+                title: 'Participated Match Result Ready',
+                message: `Your participated match on ${match.poll.type} has been completed by all members. \n`
+                    + `The result of this match is ready.`,
+                extras: matchId,
+            });
+        }
+        await this.notificationsService.send(user, match.host, {
+            type: 'poll-result',
+            title: 'Hosted Match Result Ready',
+            message: `Your hosted match on ${match.poll.type} has been completed by all members. \n`
+                + `The result of this match is ready.`,
+            extras: matchId,
+        });
     }
 }

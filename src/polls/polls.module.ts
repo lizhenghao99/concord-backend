@@ -8,11 +8,13 @@ import { MatchesModule } from '../matches/matches.module';
 import { PollResponsesRepository } from './poll-responses.repository';
 import { PollResponseEntriesRepository } from './poll-response-entries.repository';
 import { PollResultsRepository } from './poll-results.repository';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
     imports: [
         AuthModule,
         MatchesModule,
+        NotificationsModule,
         TypeOrmModule.forFeature([
             PollsRepository,
             PollResponsesRepository,

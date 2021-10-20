@@ -21,7 +21,7 @@ export class MatchesController {
     }
 
     @ApiOperation({ summary: 'List matches paged' })
-    @Get('/page')
+    @Get('page')
     listPaged(@GetUser() user: UserEntity, @Query() query: PageDto) {
         return this.matchesService.listPaged(user, query);
     }
@@ -36,5 +36,11 @@ export class MatchesController {
     @Post()
     create(@GetUser() user: UserEntity, @Body() body: CreateMatchDto) {
         return this.matchesService.create(user, body);
+    }
+
+    @ApiOperation({ summary: 'List participated matches paged' })
+    @Get('participated/page')
+    listParticipatedPaged(@GetUser() user: UserEntity, @Query() query: PageDto) {
+        return this.matchesService.listParticipatedPaged(user, query);
     }
 }

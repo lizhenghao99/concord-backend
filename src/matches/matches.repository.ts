@@ -16,7 +16,7 @@ export class MatchesRepository extends Repository<MatchEntity> {
             where: { host: { id: userId } },
             order: { createAt: 'DESC' },
             relations: ['poll'],
-        })
+        });
     }
 
     listByUserIdPaged(userId: string, skip: number, take: number): Promise<MatchEntity[]> {
@@ -32,6 +32,13 @@ export class MatchesRepository extends Repository<MatchEntity> {
     findByIdAndUserId(id: string, userId: string): Promise<MatchEntity> {
         return this.findOne({
             where: { id, host: { id: userId } },
+            relations: ['poll'],
+        });
+    }
+
+    findById(id: string): Promise<MatchEntity> {
+        return this.findOne({
+            where: { id },
             relations: ['poll'],
         });
     }

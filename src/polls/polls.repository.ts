@@ -7,9 +7,9 @@ export class PollsRepository extends Repository<PollEntity> {
         return this.findOne({ id });
     }
 
-    findByMatchId(matchId: string, userId: string): Promise<PollEntity> {
+    findByMatchId(matchId: string): Promise<PollEntity> {
         return this.findOne({
-            where: { match: { id: matchId, host: { id: userId } } },
+            where: { match: { id: matchId } },
             relations: ['match'],
         });
     }
