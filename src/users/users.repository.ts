@@ -1,10 +1,6 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, Like, Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
-import {
-    ConflictException,
-    InternalServerErrorException,
-    Logger,
-} from '@nestjs/common';
+import { ConflictException, InternalServerErrorException, Logger } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserInfoEntity } from './user-info.entity';
 
@@ -43,5 +39,23 @@ export class UsersRepository extends Repository<UserEntity> {
             .where('user.username = :username', { username })
             .addSelect('user.password')
             .getOne();
+    }
+
+    findByIdWithFriends(id: string): Promise<UserEntity> {
+        return this.findOne({
+            where: { id },
+            relations: ['friends'],
+        });
+    }
+
+    searchByUsername(username: string): Promise<UserEntity[]> {
+        return this.find({
+            where: {
+                username: Like(`%${username}%`),
+            },
+            order: {
+                username: 'ASC',
+            },
+        });
     }
 }

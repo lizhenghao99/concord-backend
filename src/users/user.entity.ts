@@ -1,9 +1,10 @@
-import { Column, Entity, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { ApiHideProperty } from '@nestjs/swagger';
 import { UserInfoEntity } from './user-info.entity';
 import { MatchEntity } from '../matches/match.entity';
 import { PollResponseEntity } from '../polls/poll-response.entity';
+import { NotificationEntity } from '../notifications/notification.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -38,4 +39,18 @@ export class UserEntity {
     @Exclude()
     @ApiHideProperty()
     responses: PollResponseEntity[];
+
+    @ManyToMany(() => UserEntity)
+    @JoinTable()
+    friends: UserEntity[];
+
+    @OneToMany(() => NotificationEntity, (notification) => notification.sender)
+    @Exclude()
+    @ApiHideProperty()
+    notificationsSent: NotificationEntity[];
+
+    @OneToMany(() => NotificationEntity, (notification) => notification.receiver)
+    @Exclude()
+    @ApiHideProperty()
+    notificationsReceived: NotificationEntity[];
 }

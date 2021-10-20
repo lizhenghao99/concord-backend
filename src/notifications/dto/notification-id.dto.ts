@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsUUID } from 'class-validator';
 
-export class GetUserInfoDto {
+export class NotificationIdDto {
     @IsNotEmpty()
     @IsUUID()
-    userId: string;
+    notificationId: string;
 }

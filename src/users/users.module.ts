@@ -7,10 +7,12 @@ import { UserInfosRepository } from './user-infos.repository';
 import { AuthModule } from '../auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as redisStore from 'cache-manager-redis-store';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
     imports: [
         forwardRef(() => AuthModule),
+        NotificationsModule,
         TypeOrmModule.forFeature([UsersRepository, UserInfosRepository]),
         CacheModule.registerAsync({
             imports: [ConfigModule],

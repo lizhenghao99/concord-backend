@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
 import { MatchesModule } from './matches/matches.module';
 import { VideosModule } from './videos/videos.module';
 import { PollsModule } from './polls/polls.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
     imports: [
@@ -45,6 +46,7 @@ import { PollsModule } from './polls/polls.module';
         MatchesModule,
         VideosModule,
         PollsModule,
+        NotificationsModule,
     ],
     controllers: [AppController],
     providers: [AppService],
